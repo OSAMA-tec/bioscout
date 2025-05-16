@@ -58,6 +58,7 @@ export const questions = pgTable("questions", {
   question: text("question").notNull(),
   answer: text("answer").notNull(),
   userId: integer("user_id"),
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -65,6 +66,7 @@ export const insertQuestionSchema = createInsertSchema(questions).pick({
   question: true,
   answer: true,
   userId: true,
+  imageUrl: true,
 });
 
 // Species identification results

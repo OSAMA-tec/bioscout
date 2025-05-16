@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { askQuestion, getQuestions } from '@/lib/api';
+import { askQuestion, getQuestions, uploadChatImage } from '@/lib/api';
 import ChatInterface from '@/components/ChatInterface';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send } from 'lucide-react';
+import { Send, Image, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -12,6 +12,7 @@ interface Message {
   content: string;
   sender: 'user' | 'bot';
   timestamp: Date;
+  imageUrl?: string;
 }
 
 const AskBioScout = () => {

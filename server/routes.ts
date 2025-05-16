@@ -8,6 +8,7 @@ import { z } from "zod";
 import { insertObservationSchema, insertQuestionSchema, insertIdentificationSchema } from "@shared/schema";
 import { identifySpecies } from "./ai/speciesIdentification";
 import { askQuestion } from "./ai/ragSystem";
+import { processChatImage } from "./ai/gemini";
 import { sampleObservations } from "./data/sampleObservations";
 
 // Configure multer for file uploads
@@ -250,6 +251,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(savedQA);
     } catch (error: any) {
       res.status(500).json({ message: "Failed to process question", error: error?.message || "Unknown error" });
+    }
+  });
+  
+  // Process image uploads in the chatbot
+  app.post("/api/chat/image", upload.single("image"), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Image file is required" });
+      }
+
+      const imagePath = req.file.path;
+      const question = req.body.question || null;
+      
+      // Process the image with Gemini
+      const answer = await processChatImage(imagePath, question);
+      
+      // Store the Q&A with image
+      const imageUrl = `/uploads/${req.file.filename}`;
+      const qaData = {
+        question: question || "What can you tell me about this image?",
+        answer,
+        userId: req.body.userId,
+        imageUrl
+      };
+      
+      const validatedData = insertQuestionSchema.parse(qaData);
+      const savedQA = await storage.createQuestion(validatedData);
+      
+      res.json(savedQA);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to process image", error: error?.message || "Unknown error" });
     }
   });
 

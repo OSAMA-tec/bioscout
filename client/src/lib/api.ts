@@ -105,6 +105,28 @@ export const askQuestion = async (data: { question: string, userId?: number }): 
   return res.json();
 };
 
+// Upload an image to the chatbot with an optional question
+export const uploadChatImage = async (imageFile: File, question?: string): Promise<Question> => {
+  const formData = new FormData();
+  formData.append('image', imageFile);
+  
+  if (question) {
+    formData.append('question', question);
+  }
+  
+  const res = await fetch('/api/chat/image', {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
+  });
+  
+  if (!res.ok) {
+    throw new Error('Failed to process image');
+  }
+  
+  return res.json();
+};
+
 // Get previous questions and answers
 export const getQuestions = async (): Promise<Question[]> => {
   const res = await fetch('/api/questions', { credentials: 'include' });
