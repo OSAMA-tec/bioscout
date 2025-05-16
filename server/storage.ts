@@ -85,7 +85,12 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
-    const user: User = { ...insertUser, id, createdAt: new Date() };
+    const user: User = { 
+      ...insertUser, 
+      id, 
+      createdAt: new Date(),
+      bio: insertUser.bio || null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -131,11 +136,20 @@ export class MemStorage implements IStorage {
   async createObservation(insertObservation: InsertObservation): Promise<Observation> {
     const id = this.observationCurrentId++;
     const observation: Observation = { 
-      ...insertObservation, 
       id, 
       verified: false, 
       rare: false,
-      createdAt: new Date() 
+      createdAt: new Date(),
+      location: insertObservation.location,
+      dateObserved: insertObservation.dateObserved,
+      userId: insertObservation.userId || null,
+      speciesName: insertObservation.speciesName || null,
+      scientificName: insertObservation.scientificName || null,
+      latitude: insertObservation.latitude || null,
+      longitude: insertObservation.longitude || null,
+      imageUrl: insertObservation.imageUrl || null,
+      notes: insertObservation.notes || null,
+      speciesType: insertObservation.speciesType || null
     };
     this.observations.set(id, observation);
     
@@ -195,7 +209,12 @@ export class MemStorage implements IStorage {
 
   async createQuestion(insertQuestion: InsertQuestion): Promise<Question> {
     const id = this.questionCurrentId++;
-    const question: Question = { ...insertQuestion, id, createdAt: new Date() };
+    const question: Question = { 
+      ...insertQuestion, 
+      id, 
+      userId: insertQuestion.userId || null,
+      createdAt: new Date() 
+    };
     this.questions.set(id, question);
     return question;
   }

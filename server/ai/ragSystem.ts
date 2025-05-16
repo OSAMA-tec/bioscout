@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { askWithOpenAI } from './openai';
 
 /**
  * Read knowledge base text files for the RAG system
  */
-function loadKnowledgeBase(): string[] {
+export function loadKnowledgeBase(): string[] {
   const knowledgeBasePath = path.join(process.cwd(), 'server', 'data', 'knowledgeBase');
   const fileNames = ['flora.md', 'fauna.md', 'conservation.md'];
   
@@ -27,7 +28,7 @@ function loadKnowledgeBase(): string[] {
  * Simple keyword-based retrieval function to find relevant documents
  * In a production system, this would use vector embeddings and semantic search
  */
-function retrieveRelevantDocuments(question: string, documents: string[]): string[] {
+export function retrieveRelevantDocuments(question: string, documents: string[]): string[] {
   // Convert question to lowercase for case-insensitive matching
   const lowercaseQuestion = question.toLowerCase();
   
@@ -59,29 +60,32 @@ function retrieveRelevantDocuments(question: string, documents: string[]): strin
 }
 
 /**
- * Generate an answer to a question using the RAG approach
- * In a production system, this would use an LLM API (e.g., OpenAI, Gemini)
+ * Generate an answer to a question using the RAG approach with OpenAI
  */
 export async function askQuestion(question: string): Promise<string> {
-  // Load the knowledge base
-  const knowledgeBase = loadKnowledgeBase();
-  
-  // Retrieve relevant documents
-  const relevantDocuments = retrieveRelevantDocuments(question, knowledgeBase);
-  
-  if (relevantDocuments.length === 0) {
-    return "I don't have enough information to answer that question about Islamabad's biodiversity yet. Consider asking about local birds, mammals, plants, or conservation efforts in the region.";
+  try {
+    // Load the knowledge base
+    const knowledgeBase = loadKnowledgeBase();
+    
+    // Retrieve relevant documents
+    const relevantDocuments = retrieveRelevantDocuments(question, knowledgeBase);
+    
+    if (relevantDocuments.length === 0) {
+      return "I don't have enough information to answer that question about Islamabad's biodiversity yet. Consider asking about local birds, mammals, plants, or conservation efforts in the region.";
+    }
+    
+    // Use OpenAI to generate a response based on the context
+    return await askWithOpenAI(question, relevantDocuments);
+  } catch (error) {
+    console.error("Error in askQuestion:", error);
+    return generateSimulatedAnswer(question);
   }
-  
-  // Simulate an LLM-generated response
-  // In a real implementation, this would pass the question and context to an LLM API
-  return generateSimulatedAnswer(question, relevantDocuments);
 }
 
 /**
- * Simulate an LLM-generated answer based on the question and retrieved documents
+ * Generate a simulated answer as fallback when OpenAI is unavailable
  */
-function generateSimulatedAnswer(question: string, relevantDocuments: string[]): string {
+function generateSimulatedAnswer(question: string): string {
   const lowerQuestion = question.toLowerCase();
   
   // Birds in Margalla Hills
@@ -138,7 +142,5 @@ function generateSimulatedAnswer(question: string, relevantDocuments: string[]):
   }
   
   // Default response for other questions
-  return "Based on information from our knowledge base about Islamabad's biodiversity: " + 
-    relevantDocuments.join("\n\n") + 
-    "\n\nNote: This response is based on available information in our database. For more specific details, consider exploring our observation records or consulting with local conservation experts.";
+  return "I'm sorry, I don't have enough information to answer that specific question about Islamabad's biodiversity yet. Consider asking about local birds, mammals, plants, conservation efforts, or specific species in the region.";
 }

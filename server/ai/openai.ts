@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import fs from 'fs';
 
 // Initialize the OpenAI client with the API key from environment variables
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -8,13 +9,12 @@ const MODEL = "gpt-4o";
 
 /**
  * Use OpenAI's Vision API to identify species in an image
- * @param imageBuffer - The image buffer to analyze
+ * @param imagePath - Path to the image file to analyze
  * @returns Array of identification results with species, scientific name, and confidence
  */
 export async function identifySpeciesWithAI(imagePath: string): Promise<any[]> {
   try {
     // Convert image path to base64
-    const fs = require('fs');
     const imageBuffer = fs.readFileSync(imagePath);
     const base64Image = imageBuffer.toString('base64');
     
@@ -54,8 +54,9 @@ export async function identifySpeciesWithAI(imagePath: string): Promise<any[]> {
       response_format: { type: "json_object" },
     });
 
+    const content = response.choices[0].message.content || "{}";
     // Parse and return the results
-    const result = JSON.parse(response.choices[0].message.content);
+    const result = JSON.parse(content);
     return Array.isArray(result) ? result : (result.results || []);
   } catch (error) {
     console.error("Error identifying species with OpenAI:", error);
@@ -98,7 +99,7 @@ export async function askWithOpenAI(question: string, context: string[]): Promis
       ],
     });
 
-    return response.choices[0].message.content;
+    return response.choices[0].message.content || "No response generated. Please try again later.";
   } catch (error) {
     console.error("Error with OpenAI RAG:", error);
     // Fall back to simulated answers if OpenAI API fails
