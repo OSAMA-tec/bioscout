@@ -1,11 +1,15 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
-import fs from 'fs';
+import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} from "@google/generative-ai";
+import fs from "fs";
 
 // Initialize the Gemini API with the key from environment variables
 const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
-const modelName = 'gemini-pro-vision'; // For image-based identification
-const textModelName = 'gemini-pro'; // For text-based Q&A
+const genAI = new GoogleGenerativeAI(apiKey || "");
+const modelName = "gemini-2.0-flash";
+const textModelName = "gemini-2.0-flash";
 
 // Helper function to convert image to base64
 function fileToGenerativePart(path: string) {
@@ -14,12 +18,14 @@ function fileToGenerativePart(path: string) {
     throw new Error(`File ${path} does not exist`);
   }
 
-  const mimeType = path.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+  const mimeType = path.toLowerCase().endsWith(".png")
+    ? "image/png"
+    : "image/jpeg";
   const imageData = fs.readFileSync(path);
   return {
     inlineData: {
-      data: imageData.toString('base64'),
-      mimeType
+      data: imageData.toString("base64"),
+      mimeType,
     },
   };
 }
@@ -29,11 +35,13 @@ function fileToGenerativePart(path: string) {
  * @param imagePath - The file path to the image for analysis
  * @returns Array of identification results with species, scientific name, and confidence
  */
-export async function identifySpeciesWithGemini(imagePath: string): Promise<any[]> {
+export async function identifySpeciesWithGemini(
+  imagePath: string,
+): Promise<any[]> {
   try {
     // Load and process the image
     const imagePart = fileToGenerativePart(imagePath);
-    
+
     // Configure the model
     const model = genAI.getGenerativeModel({
       model: modelName,
@@ -70,7 +78,7 @@ export async function identifySpeciesWithGemini(imagePath: string): Promise<any[
     const result = await model.generateContent([prompt, imagePart]);
     const response = await result.response;
     const text = response.text();
-    
+
     try {
       // Extract JSON from the response
       const jsonMatch = text.match(/\[[\s\S]*\]/);
@@ -81,23 +89,26 @@ export async function identifySpeciesWithGemini(imagePath: string): Promise<any[
         // If no JSON is found, create a structured fallback
         console.warn("No valid JSON found in Gemini response. Using fallback.");
         return [
-          { 
-            species: "Unknown Species", 
-            scientificName: "Species incognita", 
+          {
+            species: "Unknown Species",
+            scientificName: "Species incognita",
             confidence: 0.5,
-            note: "Gemini didn't return valid JSON. Original response: " + text.substring(0, 100) + "..."
-          }
+            note:
+              "Gemini didn't return valid JSON. Original response: " +
+              text.substring(0, 100) +
+              "...",
+          },
         ];
       }
     } catch (jsonError) {
       console.error("Error parsing JSON from Gemini response:", jsonError);
       return [
-        { 
-          species: "Parsing Error", 
-          scientificName: "Error in analysis", 
+        {
+          species: "Parsing Error",
+          scientificName: "Error in analysis",
           confidence: 0.1,
-          note: "Could not parse Gemini response"
-        }
+          note: "Could not parse Gemini response",
+        },
       ];
     }
   } catch (error) {
@@ -112,11 +123,14 @@ export async function identifySpeciesWithGemini(imagePath: string): Promise<any[
  * @param context Relevant documents from the knowledge base
  * @returns Generated answer based on the provided context
  */
-export async function askWithGemini(question: string, context: string[]): Promise<string> {
+export async function askWithGemini(
+  question: string,
+  context: string[],
+): Promise<string> {
   try {
     // Combine context documents
-    const combinedContext = context.join('\n\n');
-    
+    const combinedContext = context.join("\n\n");
+
     // Configure the text model
     const model = genAI.getGenerativeModel({
       model: textModelName,
@@ -160,11 +174,14 @@ export async function askWithGemini(question: string, context: string[]): Promis
  * @param question Optional text context or question about the image
  * @returns AI response about the image
  */
-export async function processChatImage(imagePath: string, question?: string): Promise<string> {
+export async function processChatImage(
+  imagePath: string,
+  question?: string,
+): Promise<string> {
   try {
     // Load and process the image
     const imagePart = fileToGenerativePart(imagePath);
-    
+
     // Configure the model
     const model = genAI.getGenerativeModel({
       model: modelName,
@@ -181,7 +198,8 @@ export async function processChatImage(imagePath: string, question?: string): Pr
     });
 
     // Create the prompt for the chat image
-    const defaultQuestion = "What is shown in this image? If it's a plant or animal, can you identify it and provide information about it?";
+    const defaultQuestion =
+      "What is shown in this image? If it's a plant or animal, can you identify it and provide information about it?";
     const prompt = question || defaultQuestion;
 
     // Generate content with the image

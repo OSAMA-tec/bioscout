@@ -193,76 +193,95 @@ const AskBioScout = () => {
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="mb-6">
             <form onSubmit={handleSendQuestion} className="relative">
-              <div className="flex items-center gap-2">
-                <div className="flex-1 relative">
-                  <Input
-                    id="questionInput"
-                    type="text"
-                    placeholder="E.g., What birds are common in Margalla Hills? or Are there leopards in Islamabad?"
-                    className="w-full pl-4 pr-12 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+              <div className="bg-white p-4 rounded-lg shadow-md border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 relative">
+                    <Input
+                      id="questionInput"
+                      type="text"
+                      placeholder="E.g., What birds are common in Margalla Hills? or Are there leopards in Islamabad?"
+                      className="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      disabled={uploadImageMutation.isPending}
+                    />
+                    <Button
+                      type="submit"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-full hover:from-green-700 hover:to-green-600 transition-all shadow-md"
+                      disabled={askMutation.isPending || uploadImageMutation.isPending || (!inputValue.trim() && !selectedImage)}
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <input 
+                    type="file" 
+                    ref={fileInputRef}
+                    id="imageUpload" 
+                    className="hidden" 
+                    accept="image/jpeg,image/png,image/jpg"
+                    onChange={handleImageSelect}
                     disabled={uploadImageMutation.isPending}
                   />
                   <Button
-                    type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors"
-                    disabled={askMutation.isPending || uploadImageMutation.isPending || (!inputValue.trim() && !selectedImage)}
+                    type="button"
+                    className={`p-3 rounded-full transition-all shadow hover:shadow-md ${
+                      selectedImage !== null 
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                        : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                    }`}
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadImageMutation.isPending || selectedImage !== null}
+                    title="Upload an image to identify species"
                   >
-                    <Send className="h-4 w-4" />
+                    <Image className="h-5 w-5" />
                   </Button>
                 </div>
                 
-                <input 
-                  type="file" 
-                  ref={fileInputRef}
-                  id="imageUpload" 
-                  className="hidden" 
-                  accept="image/jpeg,image/png,image/jpg"
-                  onChange={handleImageSelect}
-                  disabled={uploadImageMutation.isPending}
-                />
-                <Button
-                  type="button"
-                  className="p-2 bg-neutral-100 text-neutral-700 rounded-full hover:bg-neutral-200 transition-colors"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploadImageMutation.isPending || selectedImage !== null}
-                  title="Upload an image to identify species"
-                >
-                  <Image className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              {/* Image preview */}
-              {imagePreview && (
-                <div className="mt-2 relative">
-                  <div className="relative w-full max-w-xs mx-auto">
-                    <img 
-                      src={imagePreview} 
-                      alt="Selected" 
-                      className="w-full h-auto max-h-40 object-contain rounded-md border border-neutral-300" 
-                    />
-                    <Button
-                      type="button"
-                      className="absolute top-1 right-1 p-1 h-6 w-6 bg-neutral-800 bg-opacity-70 text-white rounded-full hover:bg-opacity-100 transition-colors"
-                      onClick={handleRemoveImage}
-                      title="Remove image"
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
+                {/* Image preview */}
+                {imagePreview && (
+                  <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div className="relative max-w-sm mx-auto">
+                      <div className="bg-white p-2 rounded-md shadow-sm border border-gray-200">
+                        <img 
+                          src={imagePreview} 
+                          alt="Selected" 
+                          className="w-full h-auto max-h-48 object-contain rounded" 
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        className="absolute -top-2 -right-2 p-1 h-8 w-8 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-md"
+                        onClick={handleRemoveImage}
+                        title="Remove image"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                      <div className="flex items-center justify-between mt-2 text-xs text-gray-600">
+                        <span className="font-medium">{selectedImage?.name}</span>
+                        <span className="bg-gray-200 px-2 py-1 rounded-full">
+                          {(selectedImage?.size || 0) / 1024 < 1000 ? 
+                            `${Math.round((selectedImage?.size || 0) / 1024)} KB` : 
+                            `${((selectedImage?.size || 0) / 1024 / 1024).toFixed(1)} MB`}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-neutral-600 text-center mt-1">
-                    {selectedImage?.name} - {(selectedImage?.size || 0) / 1024 < 1000 ? 
-                      `${Math.round((selectedImage?.size || 0) / 1024)} KB` : 
-                      `${((selectedImage?.size || 0) / 1024 / 1024).toFixed(1)} MB`}
+                )}
+                
+                <div className="flex items-center mt-3">
+                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {selectedImage 
+                      ? "Add an optional question about the image or click send to identify species" 
+                      : "Ask questions about local wildlife, plants, conservation, or upload images for identification"}
                   </p>
                 </div>
-              )}
-              
-              <p className="text-xs text-neutral-500 mt-1">
-                {selectedImage ? "Add an optional question about the image or click send to identify species" : 
-                "Ask questions about local wildlife, plants, conservation, or upload images for identification"}
-              </p>
+              </div>
             </form>
           </div>
           
@@ -274,38 +293,54 @@ const AskBioScout = () => {
           />
           
           {/* Suggested Questions */}
-          <div>
-            <h4 className="text-sm font-medium text-neutral-700 mb-2">Suggested Questions:</h4>
-            <div className="flex flex-wrap gap-2">
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-center mb-3">
+              <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+                </svg>
+              </div>
+              <h4 className="font-medium text-gray-700">Suggested Questions</h4>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <Button 
                 variant="outline" 
-                className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm rounded-full transition-colors"
+                className="bg-white hover:bg-blue-50 text-gray-700 text-sm rounded-lg border border-gray-200 shadow-sm hover:shadow transition-all py-2 px-3 justify-start text-left"
                 onClick={() => handleSuggestedQuestion("What endangered species live in Islamabad?")}
               >
+                <span className="text-blue-600 mr-2">→</span>
                 What endangered species live in Islamabad?
               </Button>
               <Button 
                 variant="outline" 
-                className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm rounded-full transition-colors"
+                className="bg-white hover:bg-blue-50 text-gray-700 text-sm rounded-lg border border-gray-200 shadow-sm hover:shadow transition-all py-2 px-3 justify-start text-left"
                 onClick={() => handleSuggestedQuestion("How can I identify local snake species?")}
               >
+                <span className="text-blue-600 mr-2">→</span>
                 How can I identify local snake species?
               </Button>
               <Button 
                 variant="outline" 
-                className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm rounded-full transition-colors"
+                className="bg-white hover:bg-blue-50 text-gray-700 text-sm rounded-lg border border-gray-200 shadow-sm hover:shadow transition-all py-2 px-3 justify-start text-left"
                 onClick={() => handleSuggestedQuestion("What's the best time to spot wildlife in Margalla Hills?")}
               >
+                <span className="text-blue-600 mr-2">→</span>
                 What's the best time to spot wildlife in Margalla Hills?
               </Button>
               <Button 
                 variant="outline" 
-                className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-sm rounded-full transition-colors"
+                className="bg-white hover:bg-blue-50 text-gray-700 text-sm rounded-lg border border-gray-200 shadow-sm hover:shadow transition-all py-2 px-3 justify-start text-left"
                 onClick={() => handleSuggestedQuestion("Are there recent barking deer sightings?")}
               >
+                <span className="text-blue-600 mr-2">→</span>
                 Are there recent barking deer sightings?
               </Button>
             </div>
+            
+            <p className="text-xs text-gray-500 mt-3 italic">
+              Click on any question above to quickly get information about Islamabad's biodiversity
+            </p>
           </div>
         </div>
       </div>
