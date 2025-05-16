@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { askWithOpenAI } from './openai';
+import { askWithGemini } from './gemini';
 
 /**
  * Read knowledge base text files for the RAG system
@@ -60,7 +60,7 @@ export function retrieveRelevantDocuments(question: string, documents: string[])
 }
 
 /**
- * Generate an answer to a question using the RAG approach with OpenAI
+ * Generate an answer to a question using the RAG approach with Gemini
  */
 export async function askQuestion(question: string): Promise<string> {
   try {
@@ -74,8 +74,8 @@ export async function askQuestion(question: string): Promise<string> {
       return "I don't have enough information to answer that question about Islamabad's biodiversity yet. Consider asking about local birds, mammals, plants, or conservation efforts in the region.";
     }
     
-    // Use OpenAI to generate a response based on the context
-    return await askWithOpenAI(question, relevantDocuments);
+    // Use Gemini to generate a response based on the context
+    return await askWithGemini(question, relevantDocuments);
   } catch (error) {
     console.error("Error in askQuestion:", error);
     return generateSimulatedAnswer(question);
@@ -83,7 +83,7 @@ export async function askQuestion(question: string): Promise<string> {
 }
 
 /**
- * Generate a simulated answer as fallback when OpenAI is unavailable
+ * Generate a simulated answer as fallback when Gemini is unavailable
  */
 function generateSimulatedAnswer(question: string): string {
   const lowerQuestion = question.toLowerCase();

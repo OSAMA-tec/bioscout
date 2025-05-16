@@ -1,4 +1,4 @@
-import { identifySpeciesWithAI } from './openai';
+import { identifySpeciesWithGemini } from './gemini';
 import path from 'path';
 
 export interface IdentificationResult {
@@ -10,8 +10,8 @@ export interface IdentificationResult {
 /**
  * Identify species in an uploaded image
  * 
- * This function uses OpenAI's vision capabilities to identify species in images.
- * If OpenAI is unavailable, it falls back to a simulated identification with
+ * This function uses Gemini's vision capabilities to identify species in images.
+ * If Gemini is unavailable, it falls back to a simulated identification with
  * predefined species from the Islamabad region.
  * 
  * @param imagePath Path to the uploaded image file
@@ -19,10 +19,10 @@ export interface IdentificationResult {
  */
 export async function identifySpecies(imagePath: string): Promise<IdentificationResult[]> {
   try {
-    // Try to use OpenAI for identification
-    return await identifySpeciesWithAI(imagePath);
+    // Try to use Gemini for identification
+    return await identifySpeciesWithGemini(imagePath);
   } catch (error) {
-    console.error("OpenAI identification failed, using fallback identification:", error);
+    console.error("Gemini identification failed, using fallback identification:", error);
     // Fall back to simulated identification
     return generateSimulatedIdentification(imagePath);
   }
