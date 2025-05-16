@@ -29,8 +29,8 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
-waitForPort = 5000
+waitForPort = 8800
 
 [[ports]]
-localPort = 5000
+localPort = 8800
 externalPort = 80
