@@ -12,8 +12,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-10T08:45:00"),
     imageUrl: "/uploads/himalayan_bulbul.jpg",
     notes: "Spotted early morning, feeding on berries. Distinctive white cheeks clearly visible.",
-    verified: true,
-    rare: false,
     speciesType: "bird"
   },
   {
@@ -26,8 +24,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-02T18:20:00"),
     imageUrl: "/uploads/common_leopard.jpg",
     notes: "Brief sighting at dusk. Animal crossed the path approximately 50 meters ahead and disappeared into the forest. Reported to IWMB rangers.",
-    verified: true,
-    rare: true,
     speciesType: "mammal"
   },
   {
@@ -40,8 +36,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-08T16:40:00"),
     imageUrl: "/uploads/wild_boar.jpg",
     notes: "Group of 5-6 individuals including juveniles, foraging near the edge of the lake.",
-    verified: true,
-    rare: false,
     speciesType: "mammal"
   },
   {
@@ -54,8 +48,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-05T10:15:00"),
     imageUrl: "/uploads/chir_pine.jpg",
     notes: "Old growth specimen with approximately 15m height. Documenting urban trees in the diplomatic enclave.",
-    verified: true,
-    rare: false,
     speciesType: "plant"
   },
   {
@@ -68,8 +60,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-12T13:25:00"),
     imageUrl: "/uploads/monitor_lizard.jpg",
     notes: "Large individual (approximately 1m) sunning on rocks near the walking path. Did not appear disturbed by human presence.",
-    verified: true,
-    rare: false,
     speciesType: "reptile"
   },
   {
@@ -82,8 +72,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-09T07:30:00"),
     imageUrl: "/uploads/blue_whistling_thrush.jpg",
     notes: "Heard distinctive whistling call first, then spotted near small stream. Beautiful blue plumage with yellow bill clearly visible.",
-    verified: true,
-    rare: false,
     speciesType: "bird"
   },
   {
@@ -96,8 +84,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-07T16:50:00"),
     imageUrl: "/uploads/indian_cobra.jpg",
     notes: "Found in garden of private residence. IWMB rescue team safely relocated the snake to natural habitat. Important to raise awareness of snake safety.",
-    verified: true,
-    rare: false,
     speciesType: "reptile"
   },
   {
@@ -110,8 +96,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-11T09:20:00"),
     imageUrl: "/uploads/himalayan_musk_rose.jpg",
     notes: "In full bloom along the trail. Strong fragrance attracting numerous butterflies and bees.",
-    verified: true,
-    rare: false,
     speciesType: "plant"
   },
   {
@@ -124,8 +108,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-13T15:10:00"),
     imageUrl: "/uploads/grey_mongoose.jpg",
     notes: "Active hunting behavior observed. Moved quickly through underbrush, pausing occasionally to investigate holes.",
-    verified: true,
-    rare: false,
     speciesType: "mammal"
   },
   {
@@ -138,8 +120,6 @@ export const sampleObservations: InsertObservation[] = [
     dateObserved: new Date("2025-05-14T16:15:00"),
     imageUrl: "/uploads/grey_francolin.jpg",
     notes: "Pair spotted foraging in grassy area. Characteristic call heard earlier in the morning. Seem to be resident in this area of the park.",
-    verified: true,
-    rare: false,
     speciesType: "bird"
   }
 ];

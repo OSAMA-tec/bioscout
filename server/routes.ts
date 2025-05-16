@@ -57,8 +57,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const stats = await storage.getStats();
       res.json(stats);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch stats", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to fetch stats", error: error?.message || "Unknown error" });
     }
   });
 
@@ -69,8 +69,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
       const observations = await storage.getAllObservations(limit, offset);
       res.json(observations);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch observations", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to fetch observations", error: error?.message || "Unknown error" });
     }
   });
 
@@ -80,8 +80,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { type } = req.params;
       const observations = await storage.getObservationsByType(type);
       res.json(observations);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch observations by type", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to fetch observations by type", error: error?.message || "Unknown error" });
     }
   });
 
@@ -95,8 +95,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const observations = await storage.searchObservations(query);
       res.json(observations);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to search observations", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to search observations", error: error?.message || "Unknown error" });
     }
   });
 
@@ -111,8 +111,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(observation);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch observation", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to fetch observation", error: error?.message || "Unknown error" });
     }
   });
 

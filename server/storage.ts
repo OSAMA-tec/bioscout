@@ -231,7 +231,14 @@ export class MemStorage implements IStorage {
 
   async createIdentification(insertIdentification: InsertIdentification): Promise<Identification> {
     const id = this.identificationCurrentId++;
-    const identification: Identification = { ...insertIdentification, id, createdAt: new Date() };
+    // Create identification with proper typing for results
+    const identification: Identification = { 
+      observationId: insertIdentification.observationId,
+      results: insertIdentification.results as unknown,
+      id, 
+      createdAt: new Date(),
+      selectedIdentification: insertIdentification.selectedIdentification || null 
+    };
     this.identifications.set(id, identification);
     return identification;
   }
