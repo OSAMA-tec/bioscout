@@ -6,6 +6,7 @@ interface Message {
   content: string;
   sender: 'user' | 'bot';
   timestamp: Date;
+  imageUrl?: string;
 }
 
 interface ChatInterfaceProps {
@@ -68,6 +69,15 @@ const ChatInterface = ({ messages, isLoading, messagesEndRef }: ChatInterfacePro
               ? 'bg-primary-light/20' 
               : 'bg-white shadow-sm'} p-3 rounded-lg max-w-[80%]`}
           >
+            {message.imageUrl && (
+              <div className="mb-2">
+                <img 
+                  src={message.imageUrl} 
+                  alt="Uploaded" 
+                  className="max-w-full rounded-md max-h-60 object-contain" 
+                />
+              </div>
+            )}
             {formatMessage(message.content)}
           </div>
         </div>

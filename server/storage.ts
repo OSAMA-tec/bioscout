@@ -213,6 +213,7 @@ export class MemStorage implements IStorage {
       ...insertQuestion, 
       id, 
       userId: insertQuestion.userId || null,
+      imageUrl: insertQuestion.imageUrl || null,
       createdAt: new Date() 
     };
     this.questions.set(id, question);
