@@ -7,6 +7,7 @@ import fs from "fs";
 
 // Initialize the Gemini API with the key from environment variables
 const apiKey = process.env.GEMINI_API_KEY;
+console.log(apiKey)
 const genAI = new GoogleGenerativeAI(apiKey || "");
 const modelName = "gemini-2.0-flash";
 const textModelName = "gemini-2.0-flash";
