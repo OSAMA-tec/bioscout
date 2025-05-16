@@ -1,8 +1,20 @@
 import OpenAI from "openai";
 import fs from 'fs';
 
-// Initialize the OpenAI client with the API key from environment variables
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Check if OpenAI API key is valid
+const apiKey = process.env.OPENAI_API_KEY;
+let openai: OpenAI | null = null;
+
+try {
+  if (apiKey) {
+    openai = new OpenAI({ apiKey });
+    console.log("OpenAI client initialized successfully");
+  } else {
+    console.warn("No OpenAI API key found. Fallback identification will be used.");
+  }
+} catch (error) {
+  console.error("Error initializing OpenAI client:", error);
+}
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const MODEL = "gpt-4o";
