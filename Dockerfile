@@ -35,4 +35,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 8800
 
 
-CMD ["node", "dist/api/index.js"] 
+CMD ["node", "server/index.js"] 
