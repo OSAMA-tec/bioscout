@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface Message {
@@ -16,33 +17,6 @@ interface ChatInterfaceProps {
 }
 
 const ChatInterface = ({ messages, isLoading, messagesEndRef }: ChatInterfaceProps) => {
-  // Function to format message text with line breaks and lists
-  const formatMessage = (content: string) => {
-    if (!content) return null;
-    
-    // Split by line breaks
-    const lines = content.split('\n');
-    
-    return lines.map((line, i) => {
-      // Check if the line is a list item
-      if (line.match(/^-\s/)) {
-        return (
-          <li key={i} className="ml-5">
-            {line.replace(/^-\s/, '')}
-          </li>
-        );
-      }
-      
-      // If it's an empty line, add some spacing
-      if (line.trim() === '') {
-        return <br key={i} />;
-      }
-      
-      // Otherwise, return the line as a paragraph
-      return <p key={i}>{line}</p>;
-    });
-  };
-
   return (
     <div className="bg-neutral-50 rounded-lg h-[420px] overflow-y-auto custom-scrollbar p-4 mb-4 shadow-inner">
       {/* Messages */}
@@ -88,8 +62,8 @@ const ChatInterface = ({ messages, isLoading, messagesEndRef }: ChatInterfacePro
                 <p className="text-xs text-gray-500 mt-1">Uploaded image</p>
               </div>
             )}
-            <div className="prose prose-sm">
-              {formatMessage(message.content)}
+            <div className="prose prose-sm max-w-none">
+              <ReactMarkdown>{message.content}</ReactMarkdown>
             </div>
             <div className="text-xs text-gray-400 mt-2">
               {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
