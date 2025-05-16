@@ -137,11 +137,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const observation = await storage.createObservation(validatedData);
       
       res.status(201).json(observation);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid observation data", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to create observation", error: error.message });
+      res.status(500).json({ message: "Failed to create observation", error: error?.message || "Unknown error" });
     }
   });
 
@@ -158,8 +158,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(updatedObservation);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to update observation", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update observation", error: error?.message || "Unknown error" });
     }
   });
 
@@ -174,8 +174,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json({ message: "Observation deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete observation", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete observation", error: error?.message || "Unknown error" });
     }
   });
 
@@ -190,8 +190,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const results = await identifySpecies(imagePath);
       
       res.json(results);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to identify species", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to identify species", error: error?.message || "Unknown error" });
     }
   });
 
@@ -202,11 +202,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const identification = await storage.createIdentification(validatedData);
       
       res.status(201).json(identification);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid identification data", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to save identification", error: error.message });
+      res.status(500).json({ message: "Failed to save identification", error: error?.message || "Unknown error" });
     }
   });
 
@@ -221,8 +221,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(identification);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch identification", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to fetch identification", error: error?.message || "Unknown error" });
     }
   });
 
@@ -248,8 +248,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const savedQA = await storage.createQuestion(validatedData);
       
       res.json(savedQA);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to process question", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to process question", error: error?.message || "Unknown error" });
     }
   });
 
@@ -258,8 +258,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const questions = await storage.getAllQuestions();
       res.json(questions);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch questions", error: error.message });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to fetch questions", error: error?.message || "Unknown error" });
     }
   });
 
